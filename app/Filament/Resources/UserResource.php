@@ -48,6 +48,26 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('tasks_count')
+                    ->counts('tasks')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('completed_tasks_count')
+                    ->counts([
+                        'tasks as completed_tasks_count' => function (Builder $query) {
+                            $query->where('status', 'completed');
+                        }
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('pending_tasks_count')
+                    ->counts([
+                        'tasks as pending_tasks_count' => function (Builder $query) {
+                            $query->where('status', 'pending');
+                        }
+                    ])
+                    ->label('Total Pending'),
+                Tables\Columns\TextColumn::make('tasks_sum_amount')
+                    ->sum('tasks', 'amount')
+                    ->label('Total Amount'),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),

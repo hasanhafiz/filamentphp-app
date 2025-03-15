@@ -16,4 +16,11 @@ class ListTasks extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TaskResource\Widgets\TaskOverview::class,
+        ];
+    }
 }

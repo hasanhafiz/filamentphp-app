@@ -35,8 +35,11 @@ class TaskResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('user.name'),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('User Email')
             ])
             ->filters([
                 //

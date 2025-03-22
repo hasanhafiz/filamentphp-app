@@ -20,8 +20,9 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => fake()->realText('200'),
-            'status' => $this->faker->randomElement( TaskStatusEnum::cases() ),
-            'user_id' => rand(1,10)
+            'status' => $this->faker->randomElement(TaskStatusEnum::cases()),
+            'user_id' => rand(1, 10),
+            'category_id' => rand(1, 5)
         ];
     }
 }

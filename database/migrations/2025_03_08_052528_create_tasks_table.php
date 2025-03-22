@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->enum('status', ['pending', 'processing', 'completed', 'canceled'])->default('pending');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('amount')->default(100);
+            $table->foreignId('category_id');
             $table->timestamps();
         });
     }

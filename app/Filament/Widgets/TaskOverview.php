@@ -8,6 +8,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class TaskOverview extends BaseWidget
 {
+    protected static ?int $sort = 2;
     protected static ?string $pollingInterval = '60s';
     // Never refresh widgets
     // protected static ?string $pollingInterval = null;

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Task;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
@@ -15,6 +16,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $laravelCategories = [
+            'Core Concepts',
+            'Database & Eloquent',
+            'Authentication & Authorization',
+            'Blade & Frontend',
+            'API Development',
+            'Testing & Debugging',
+            'Performance & Optimization',
+            'Deployment & DevOps',
+        ];
+
+        // 1: loop
+        foreach ($laravelCategories as $cat) {
+            Category::create(['name' => $cat]);
+        }
+        // 2: 
+
+
         // Way 1
         // User::factory(10)->create();
         // Task::factory(10)->create();
@@ -51,18 +71,18 @@ class DatabaseSeeder extends Seeder
 
         // Way 5 
         User::factory()
-        ->count(10)
-        ->hasTasks(3, function ( array $attributes, User $user) {
-           return [
-            'title' => 'Task title ' . $user->id,
-            'created_at' => now()->subDays(2),
-        ];
-        })
-        ->state( new Sequence(
-            ['is_admin' => 1],
-            ['is_admin' => 0],
-        ))
-        ->create();
+            ->count(10)
+            ->hasTasks(3, function (array $attributes, User $user) {
+                return [
+                    'title' => 'Task title ' . $user->id,
+                    'created_at' => now()->subDays(2),
+                ];
+            })
+            ->state(new Sequence(
+                ['is_admin' => 1],
+                ['is_admin' => 0],
+            ))
+            ->create();
 
         User::factory()->create([
             'name' => 'Test User',

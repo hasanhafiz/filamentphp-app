@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TaskStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,18 +20,27 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function scopePending(Builder $query)
     {
-        return $query->where('status', 'pending');
+        return $query->where('status', TaskStatusEnum::PENDING);
     }
 
     public function scopeCompleted(Builder $query)
     {
-        return $query->where('status', 'completed');
+        return $query->where('status', TaskStatusEnum::COMPLETED);
     }
 
     public function scopeCanceled(Builder $query)
     {
-        return $query->where('status', 'canceled');
+        return $query->where('status', TaskStatusEnum::CANCELED);
     }
+
+    protected $casts = [
+        'status' => TaskStatusEnum::class
+    ];
 }

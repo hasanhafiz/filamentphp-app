@@ -36,7 +36,7 @@ class TaskStatusChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->is_admin == 0;
+        return auth()->user()->is_admin == 1;
     }
 
 }

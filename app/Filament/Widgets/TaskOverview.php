@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\TaskStatusEnum;
 use App\Models\Task;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -16,10 +17,12 @@ class TaskOverview extends BaseWidget
     {
         return [
             Stat::make('Total Task', Task::count())
-                ->description('Total number of task'),
-            Stat::make('Completed Task Count', Task::completed()->count()),
+                ->description('Total number of Task'),
+            Stat::make('Completed Task Count', Task::completed()->count())
+                ->description(TaskStatusEnum::COMPLETED->getDescription()),
             Stat::make('Pending  Count', Task::pending()->count()),
-            Stat::make('Canceled  Count', Task::canceled()->count()),
+            Stat::make('Canceled  Count', Task::canceled()->count())
+                ->description(TaskStatusEnum::CANCELED->getDescription()),
         ];
     }
 }

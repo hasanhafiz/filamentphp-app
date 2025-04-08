@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\TaskStatusEnum;
-use App\Filament\Resources\TaskResource\Pages;
-use App\Filament\Resources\TaskResource\RelationManagers;
-use App\Models\Category;
-use App\Models\Task;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Task;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Category;
+use Filament\Forms\Form;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
+use App\Enums\TaskStatusEnum;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\TaskResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\TaskResource\RelationManagers;
 
 class TaskResource extends Resource
 {
@@ -56,14 +58,32 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('User Email')
             ])
             ->filters([
-                //
-            ])
+                Tables\Filters\Filter::make('title')
+                    ->form([
+                        Forms\Components\TextInput::make('title')
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        // dd($data);
+                        // dd($query);
+                        return $query->where('title', 'LIKE', '%' . $data['title'] . '%');
+                    }),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(TaskStatusEnum::class)
+                    ->label('Task Status')
+                    ->multiple(),
+
+                Tables\Filters\SelectFilter::make('user_id')
+                    ->options(User::orderBy('name', 'ASC')->pluck('name', 'id'))
+                    // ->relationship('user', 'name')
+                    ->label('User')
+            ], FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),

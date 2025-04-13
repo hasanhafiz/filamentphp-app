@@ -21,15 +21,18 @@ class ListTasks extends ListRecords
     {
         return [
             'all' => Tab::make()
-                ->badge(Task::count()),
+                // ->label(self::tabLabel('All', 'all'))
+                ->badge(Task::count())
+            ,
             'pending' => Tab::make()
+                // ->label(self::tabLabel('Pending', 'pending'))
                 ->modifyQueryUsing(function (Builder $query) {
                     $query->where('status', TaskStatusEnum::PENDING);
                 })
                 ->badge(Task::pending()->count())
-                ->badgeColor('warning')
-            ,
+                ->badgeColor('warning'),
             'canceled' => Tab::make()
+                // ->label(self::tabLabel('Canceled', 'canceled'))
                 ->modifyQueryUsing(function (Builder $query) {
                     $query->where('status', TaskStatusEnum::CANCELED);
                 })
@@ -45,6 +48,19 @@ class ListTasks extends ListRecords
                 ->iconPosition(IconPosition::Before)
         ];
 
+    }
+
+    protected static function tabLabel(string $label, string $tab)
+    {
+        // This will not work, since first time it is okay. but in the next time, since ajax call happened
+        // this function will not be execucated!
+        $activeTab = request()->input('activeTab', 'all');
+
+        dump(request()->input());
+
+        if ($activeTab == $tab) {
+            return '✅ ' . $label;
+        }
     }
 
     public function getDefaultActiveTab(): string|int|null

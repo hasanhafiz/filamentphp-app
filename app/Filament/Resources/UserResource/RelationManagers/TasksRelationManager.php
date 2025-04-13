@@ -54,7 +54,7 @@ class TasksRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->slideOver(),
+                    ->modal(true),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -20,12 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Tables\Actions\CreateAction::configureUsing(function ($action) {
-        //     return $action->slideOver();
-        // });
+        Tables\Actions\CreateAction::configureUsing(function ($action) {
+            return $action->slideOver();
+        });
 
-        // Tables\Actions\EditAction::configureUsing(function ($action) {
-        //     return $action->slideOver();
-        // });
+        Tables\Actions\EditAction::configureUsing(function ($action) {
+            return $action->slideOver();
+        });
     }
 }

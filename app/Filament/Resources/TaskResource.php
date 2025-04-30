@@ -55,11 +55,16 @@ class TaskResource extends Resource
         return $table
             ->defaultSort('id', 'DESC')
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('SL#')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('completion_date')
+                    ->dateTime('d/m/Y H:i'),
                 Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('User Email')
@@ -82,11 +87,42 @@ class TaskResource extends Resource
                 Tables\Filters\SelectFilter::make('user_id')
                     ->options(User::orderBy('name', 'ASC')->pluck('name', 'id'))
                     // ->relationship('user', 'name')
-                    ->label('User')
+                    ->label('User'),
+                Tables\Filters\Filter::make('completed_from')
+                    ->form([
+                        Forms\Components\DatePicker::make('completed_from'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        $query
+                            ->when(
+                                $data['completed_from'],
+                                function (Builder $query, $date) {
+                                    return $query->whereDate('completion_date', '>=', $date);
+                                }
+                            );
+                        //return $query->where('title', 'LIKE', '%' . $data['title'] . '%');
+                    }),
+                Tables\Filters\Filter::make('completed_until')
+                    ->form([
+                        Forms\Components\DatePicker::make('completed_until'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        $query
+                            ->when(
+                                $data['completed_until'],
+                                function (Builder $query, $date) {
+                                    return $query->whereDate('completion_date', '<=', $date);
+                                }
+                            );
+                        //return $query->where('title', 'LIKE', '%' . $data['title'] . '%');
+                    }),
             ], FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

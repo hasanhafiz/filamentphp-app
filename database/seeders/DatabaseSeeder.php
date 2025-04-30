@@ -72,10 +72,11 @@ class DatabaseSeeder extends Seeder
         // Way 5 
         User::factory()
             ->count(10)
-            ->hasTasks(3, function (array $attributes, User $user) {
+            ->hasTasks(5, function (array $attributes, User $user) {
                 return [
                     'title' => 'Task title ' . $user->id,
                     'created_at' => now()->subDays(2),
+                    'completion_date' => now()->addDays(rand(3, 15))
                 ];
             })
             ->state(new Sequence(

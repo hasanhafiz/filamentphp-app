@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('amount')->default(100);
             $table->foreignId('category_id');
+            $table->dateTime('completion_date')->default(now()->addDays(3));
             $table->timestamps();
         });
     }

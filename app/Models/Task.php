@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TaskStatusEnum;
+use App\Models\Scopes\TaskScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,4 +44,19 @@ class Task extends Model
     protected $casts = [
         'status' => TaskStatusEnum::class
     ];
+
+
+    protected static function booted(): void
+    {
+        // ################## Anonymous global query scope ##################
+
+        // if (auth()->check() && !auth()->user()->isAdmin()) {
+        //     static::addGlobalScope('task_scope', function (Builder $builder): void {
+        //         $builder->where('user_id', auth()->user()->id);
+        //     });
+        // }
+
+        // ############ Dedicated class of Global query scope ##################
+        static::addGlobalScope(new TaskScope());
+    }
 }

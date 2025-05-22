@@ -19,35 +19,41 @@ class ListTasks extends ListRecords
 
     public function getTabs(): array
     {
+        $counts = Task::query()
+            ->selectRaw("COUNT( CASE WHEN status = '" . TaskStatusEnum::PENDING->value . "' THEN 1 END ) AS pending")
+            ->selectRaw("COUNT( CASE WHEN status = '" . TaskStatusEnum::CANCELED->value . "' THEN 1 END ) AS canceled")
+            ->selectRaw("COUNT( CASE WHEN status = '" . TaskStatusEnum::COMPLETED->value . "' THEN 1 END ) AS completed")
+            ->first();
+        // dump($counts->pending);
+        // dd($counts->get()); // return collection
+        // dd($counts->first()); // return task object
+
+        debug($counts);
+
         return [
             'all' => Tab::make()
-                // ->label(self::tabLabel('All', 'all'))
-                ->badge(Task::count())
-            ,
+                ->badge(Task::count()),
             'pending' => Tab::make()
-                // ->label(self::tabLabel('Pending', 'pending'))
                 ->modifyQueryUsing(function (Builder $query) {
                     $query->where('status', TaskStatusEnum::PENDING);
                 })
-                ->badge(Task::pending()->count())
+                ->badge($counts->pending)
                 ->badgeColor('warning'),
             'canceled' => Tab::make()
-                // ->label(self::tabLabel('Canceled', 'canceled'))
                 ->modifyQueryUsing(function (Builder $query) {
                     $query->where('status', TaskStatusEnum::CANCELED);
                 })
-                ->badge(Task::canceled()->count())
+                ->badge($counts->canceled)
                 ->badgeColor('danger'),
             'completed' => Tab::make()
                 ->modifyQueryUsing(function (Builder $query) {
                     $query->where('status', TaskStatusEnum::COMPLETED);
                 })
-                ->badge(Task::completed()->count())
+                ->badge($counts->completed)
                 ->badgeColor('success')
                 ->icon('heroicon-o-check')
                 ->iconPosition(IconPosition::Before)
         ];
-
     }
 
     protected static function tabLabel(string $label, string $tab)

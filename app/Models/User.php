@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_id'
+        'is_admin'
     ];
 
     /**
@@ -48,11 +50,17 @@ class User extends Authenticatable
         ];
     }
 
-
     // user->hasMany->tasks
     // $this->hasMany->tasks
 
-    public function tasks(): HasMany {
-        return $this->hasMany( Task::class);
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
+
+    public function scopeIsAdmin()
+    {
+        return $this->hasRole('Administrator');
+    }
+
 }

@@ -5,17 +5,17 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\Task;
 use App\Models\User;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables;
 use App\Models\Category;
 use Filament\Forms\Form;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use App\Enums\TaskStatusEnum;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TaskResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\TaskResource\RelationManagers;
 
 class TaskResource extends Resource
 {
@@ -68,6 +68,7 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('User Email')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\Filter::make('title')
@@ -116,7 +117,8 @@ class TaskResource extends Resource
                             );
                         //return $query->where('title', 'LIKE', '%' . $data['title'] . '%');
                     }),
-            ], FiltersLayout::AboveContent)
+            ], FiltersLayout::AboveContentCollapsible)
+
             ->filtersFormColumns(3)
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -145,5 +147,22 @@ class TaskResource extends Resource
             'create' => Pages\CreateTask::route('/create'),
             'edit' => Pages\EditTask::route('/{record}/edit'),
         ];
+    }
+
+    /*
+    'title', 'description', 'status', 'user_id', 'amount', 'category_id', 'completion_date'
+    */
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('title'),
+                TextEntry::make('description'),
+                TextEntry::make('status'),
+                TextEntry::make('user.name'),
+                TextEntry::make('amount'),
+                TextEntry::make('category.name'),
+                TextEntry::make('completion_date'),
+            ])->columns(1);
     }
 }
